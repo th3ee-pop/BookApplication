@@ -1,0 +1,42 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn add antd
+
+PATH: 
+  /usr/lib/jvm/jdk1.8.0_161/bin:/home/th3ee/bin:/home/th3ee/.local/bin:/usr/lib/jvm/jdk1.7/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/lib/jvm/java-8-oracle/bin:/usr/lib/jvm/java-8-oracle/db/bin:/usr/lib/jvm/java-8-oracle/jre/bin:/home/th3ee/gradle-3.4.1/bin:/home/th3ee/gradle-3.4.1/bin:/home/th3ee/Library/Android/sdk/tools:/home/th3ee/Library/Android/sdk/platform-tools
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  8.0.0
+
+Platform: 
+  linux x64
+
+npm manifest: 
+  {
+    "dependencies": {
+      "prop-types": "^15.5.8",
+      "react": "^15.5.4",
+      "react-dom": "^15.5.4",
+      "react-router-dom": "^4.2.2"
+    },
+    "devDependencies": {
+      "react-scripts": "0.9.5"
+    },
+    "scripts": {
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "test": "react-scripts test --env=jsdom",
+      "eject": "react-scripts eject"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: EACCES: permission denied, mkdir '/home/th3ee/Udacity/Knowledge/reactnd-project-myreads-starter/node_modules/add-dom-event-listener'
