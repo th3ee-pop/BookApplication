@@ -2,38 +2,70 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as BooksAPI from "./BooksAPI";
 import PropTypes from 'prop-types';
+import { Debounce } from 'react-throttle';
 class SearchBook extends Component {
 
     static propTypes = {
+        books: PropTypes.any.isRequired,
         onSwitch: PropTypes.func.isRequired
     };
     state = {
         query: '',
-        searchedBooks: []
+        searchedBooks: [],
+        books: [],
+        warning: 'enter a string to query'
     };
+    componentWillMount() {
+       const myBooks = [
+           ...this.props.books.currentlyReading,
+           ...this.props.books.wantToRead,
+           ...this.props.books.read,
+           ...this.props.books.none
+       ];
+       console.log(this.props.books.currentlyReading);
+        this.setState({
+            books: myBooks
+        }, () => {
+            console.log(this.state.books)
+        })
+    }
 
     searchBook(query) {
+        console.log(query);
             this.setState({query: query.trim()}, () => {
                 if (query !== '') {
                     BooksAPI.search(this.state.query).then(
                         data => {
                             if (data instanceof Array) {
-                                console.log(data);
-                                this.setState({searchedBooks: data})
+                                data.forEach(book => {
+                                    this.state.books.forEach(myBook => {
+                                        if(book.id === myBook.id) {
+                                            book.shelf = myBook.shelf
+                                        }
+                                    });
+                                    if (!book.shelf) {
+                                        book.shelf = 'none'
+                                    }
+                                });
+                                this.setState({searchedBooks: data}, ()=> {
+                                    console.log(this.state.searchedBooks);
+                                })
+                            } else {
+                                console.log('no match');
+                                this.setState({searchedBooks: [], warning: 'No result, try another query string~'})
                             }
                         }
                     ).catch(
                         err => console.log(err)
                     )
                 } else {
-                    this.setState({searchedBooks: []})
+                    this.setState({searchedBooks: [], warning: 'enter a string to query'})
                 }
-
             })
     }
 
     render() {
-        const { onSwitch } =this.props;
+        const { books, onSwitch } =this.props;
         return (
             <div className="search-books">
 
@@ -48,11 +80,16 @@ class SearchBook extends Component {
                         However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                         you don't find a specific author or title. Every search is limited by search terms.*/}
 
-                        <input type="text" placeholder="Search by title or author" value={this.state.query} onChange={(e) => this.searchBook(e.target.value)}/>
+                        <Debounce time='100' handler='onChange'>
+                            <input type="text" placeholder="Search by title or author"  onChange={(e) => this.searchBook(e.target.value)}/>
+                        </Debounce>
                     </div>
                 </div>
+
                 {this.state.searchedBooks.length === 0 ? (
-                    <div className='search-books-results'></div>
+                    <div className='search-books-results'>
+                        <div style={{textAlign: 'center'}}>{this.state.warning}</div>
+                    </div>
                 ) : (
                     <div className="search-books-results">
                         <ol className='books-grid'>
@@ -69,12 +106,12 @@ class SearchBook extends Component {
                                                             backgroundImage: `url(${book.imageLinks.thumbnail})`
                                                         }}></div>
                                                     ) : (
-                                                        <div className='book-cover'>No image</div>
+                                                        <div style={{width: 128, height: 193}} className='book-cover'>No image</div>
                                                     )
                                                 }
 
                                                 <div className="book-shelf-changer">
-                                                    <select defaultValue='none'  onChange={(e) => {
+                                                    <select defaultValue={book.shelf}  onChange={(e) => {
                                                         console.log(e.target.value);
                                                         onSwitch(book, book.shelf, e.target.value)
                                                     }}

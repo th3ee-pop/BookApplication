@@ -19,7 +19,7 @@ class BooksApp extends Component {
       currentlyReading: [],
       wantToRead: [],
       read: [],
-          none: []
+      none: []
       }
   };
 
@@ -80,7 +80,7 @@ class BooksApp extends Component {
             </div>
         )}/>
           <Route path='/search' render = {({history}) => (
-              <SearchBook onSwitch = {this.switchShelf}/>
+              <SearchBook books={this.state.books} onSwitch = {this.switchShelf}/>
           )}/>
       </div>
     )
